@@ -1,23 +1,10 @@
-import os
-import cv2 
+from VideoPlayer import VideoPlayer
 
-def watch_video(name):
-    video = cv2.VideoCapture('./videos/{}'.format(name))
-    
-    while(True):
-        
-        ret, frame = video.read()
-        
-        if ret == True:
-            cv2.imshow('frame', frame)
-            cv2.waitKey(1)
-
-        else: 
-            break
-
-    video.release()
-    cv2.destroyAllWindows()
+model_path = '/Models'
+face_model = 'face_detector.xml'
+eye_model = 'eye_detector.xml'
+video_file = 'video_2.hevc'
 
 if __name__ == '__main__':
-    # read video
-    watch_video('video_4.hevc')
+    player = VideoPlayer(model_path, face_model, eye_model)
+    player.process_video(video_file)
