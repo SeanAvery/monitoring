@@ -23,11 +23,16 @@ class FaceAnalyzer():
                 3)
 
             closeup = frame[y: y+h, x: x+w]
-
+            
             self.detect_eyes(frame, closeup, (x, y, w, h))
 
         # crop out face closeup
         return frame
+
+    def create_hd(self, closeup):
+        yuv_closeup = cv2.cvtColor(closeup, cv2.COLOR_BGR2YUV)
+        yuv_closeup[:, :, 0] = cv2.equalizeHist(yuv_closeup[:, :, 0])
+        return cv2.cvtColor(yuv_closeup, cv2.COLOR_YUV2BGR)
 
     def detect_eyes(self, frame, closeup, coords):
         eyes = self.eye_cascade.detectMultiScale(closeup)
@@ -41,6 +46,10 @@ class FaceAnalyzer():
                 (20, 255, 57),
                 3)
 
-        cv2.imshow('frame', frame)
+            eye_closeup = closeup[ey: ey+eh, ex: ex+ew]
+            self.detect_pupil(eye_closeup)
 
         return frame
+
+    def detect_pupil(self, eye_closeup):
+        cv2.imshow('eye', eye_closeup)
