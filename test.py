@@ -1,9 +1,12 @@
-from VideoPlayer import VideoPlayer
-from FaceAnalyzer import FaceAnalyzer
+from VideoAnalyzer import VideoAnalyzer
+from Face import Face
 
 video_file = 'video_2.hevc'
 
 if __name__ == '__main__':
-    analyzer = FaceAnalyzer()
-    player = VideoPlayer(analyzer)
-    player.process_video(video_file)
+    face = Face()
+    video = VideoAnalyzer(face)
+    video.process_video(video_file)
+
+
+  
