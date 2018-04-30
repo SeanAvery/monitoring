@@ -39,14 +39,19 @@ class VideoAnalyzer():
 
     def estimate_camera_calibration(self, video):
         ret, frame = video.read()
+
         if ret == True:
             frame_size = frame.shape
             focal_length = frame_size[1]
             center = (frame_size[1]/2, frame_size[0]/2)
-            self.camera_matrix = np.array(
+
+            camera_matrix = np.array(
                 [[focal_length, 0, center[0]],
                 [0, focal_length,  center[1]],
                 [0, 0, 1]],
                 dtype="double")
+
+            self.face.set_camera_matrix(camera_matrix)
+
         else:
             raise ValueError('could not read frame from video')
