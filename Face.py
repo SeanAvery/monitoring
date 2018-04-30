@@ -30,7 +30,8 @@ class Face():
         face = self.reduce_faces(faces)
         features = self.detect_features(frame, face)
         reduced_features = self.reduce_features(features)
-        self.calculate_pose(reduced_features)
+        rotation, translation = self.calculate_pose(reduced_features)
+        self.draw_head_pose_vector(frame, rotation, translation, reduced_features)
         return frame
 
     def reduce_faces(self, faces):
@@ -61,7 +62,7 @@ class Face():
             self.camera_matrix,
             self.dist_coeffs,
             flags=cv2.SOLVEPNP_ITERATIVE)
-        if sucess == True:
+        if success == True:
             return (rotation, translation)
         else:
             raise ValueError('could not calculate rotation, translation')
@@ -75,6 +76,19 @@ class Face():
             tuple(features[48]),     # left corner, mouth
             tuple(features[54])      # right corner, mouth
         ], dtype='double')
+
+    def draw_head_pose_vector(self, frame, rotation, translation, features):
+        (head_pose, jacobian) = cv2.projectPoints(
+            np.array([(0.0, 0.0, 1000.0)]),
+            rotation,
+            translation,
+            self.camera_matrix,
+            self.dist_coeffs)
+
+        p1 = ( int(features[0][0]), int(features[0][1]))
+        p2 = ( int(head_pose[0][0][0]), int(head_pose[0][0][1]))
+
+        cv2.line(frame, p1, p2, (255, 0, 0), 2)
 
     ''' UTILS '''
 
